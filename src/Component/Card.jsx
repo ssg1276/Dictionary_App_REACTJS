@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 function Card() {
   const [state, setState] = useState({
@@ -11,32 +11,39 @@ function Card() {
     error: false,
     result: '',
     isPlaying: false,
-    name:'',
-    audio2:'',
-    isPlaying2:false,
-  });
+    name: '',
+    audio2: '',
+    isPlaying2: false,
+  })
 
   const changeHandler = (event) => {
-    setState({ ...state, inputValue: event.target.value, show: false, error: false, isPlaying: false,isPlaying2: false });
-  };
+    setState({
+      ...state,
+      inputValue: event.target.value,
+      show: false,
+      error: false,
+      isPlaying: false,
+      isPlaying2: false,
+    })
+  }
 
   const playAudio = () => {
-    setState({ ...state, isPlaying: true });
-    const audioElement = new Audio(state.audio);
-    audioElement.play();
+    setState({ ...state, isPlaying: true })
+    const audioElement = new Audio(state.audio)
+    audioElement.play()
     audioElement.addEventListener('ended', () => {
-      setState({ ...state, isPlaying: false });
-    });
-  };
+      setState({ ...state, isPlaying: false })
+    })
+  }
 
   const playAudio2 = () => {
-    setState({ ...state, isPlaying2: true });
-    const audioElement = new Audio(state.audio2);
-    audioElement.play();
+    setState({ ...state, isPlaying2: true })
+    const audioElement = new Audio(state.audio2)
+    audioElement.play()
     audioElement.addEventListener('ended', () => {
-      setState({ ...state, isPlaying2: false });
-    });
-  };
+      setState({ ...state, isPlaying2: false })
+    })
+  }
 
   const searchWord = () => {
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${state.inputValue}`)
@@ -49,57 +56,85 @@ function Card() {
           text: data[0].phonetics[0].text,
           audio: data[0].phonetics[0].audio,
           show: true,
-          audio2:data[0].phonetics[1].audio,
-        });
+          audio2: data[0].phonetics[1]?.audio,
+        })
       })
       .catch((error) => {
-        setState({ ...state, error: true, show: false, result: error.toString() });
-      });
-  };
+        setState({
+          ...state,
+          error: true,
+          show: false,
+          result: error.toString(),
+        })
+      })
+  }
 
   return (
-    <div className="bg-black rounded-md shadow-orange-50 shadow-md flex-col flex justify-evenly w-auto h-auto items-center">
-      <div className="flex flex-row">
+    <div className="bg-gradient-to-r from-purple-500 to-indigo-500 w-[500px] rounded-md shadow-lg p-6">
+      <div className="flex flex-row items-center justify-center">
         <input
           type="text"
           onChange={changeHandler}
           value={state.inputValue}
-          placeholder="enter word "
-          className="p-2 m-4 rounded-md"
+          placeholder="Enter word"
+          className="p-2 m-4 rounded-md border border-white focus:outline-none focus:border-purple-700"
         />
         <button
-          className="bg-white font-bold uppercase rounded-md shadow-orange-50 shadow-lg p-2 m-4"
+          className="bg-white text-purple-700 font-bold uppercase rounded-md shadow-md p-2 m-4 hover:bg-purple-700 hover:text-white focus:outline-none focus:shadow-outline"
           onClick={searchWord}
         >
           Search
         </button>
       </div>
-      <div className={state.show ? 'text-white flex flex-col m-2' : 'hidden'}>
-        <p>"word" :- {state.word1}</p>
-        <p>"text" :- {state.text}</p>
-        <p>
-          "audio by-US 3.0" :-{' '}
+      <div className={state.show ? 'flex flex-col m-2' : 'hidden'}>
+        <p className="text-black uppercase font-black">
+          word:{' '}
+          <span className="text-white lowercase font-normal p-1">
+            {state.word1}
+          </span>
+        </p>
+        <p className="text-black uppercase font-black">
+          text:{' '}
+          <span className="text-white lowercase font-normal p-1">
+            {state.text}
+          </span>
+        </p>
+        <p className="text-black uppercase font-black">
+          Audio by-US 3.0:{' '}
           {state.audio && (
-            <button onClick={playAudio} disabled={state.isPlaying}>
+            <button
+              onClick={playAudio}
+              disabled={state.isPlaying}
+              className="bg-blue-500 text-white p-2  font-normal rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+            >
               {state.isPlaying ? 'Playing...' : 'Play Audio'}
             </button>
           )}
         </p>
-        <p>
-          "audio by-SA 3.0" :-{' '}
+        <p className="text-black uppercase font-black">
+          Audio by-SA 3.0:{' '}
           {state.audio2 && (
-            <button onClick={playAudio2} disabled={state.isPlaying2}>
+            <button
+              onClick={playAudio2}
+              disabled={state.isPlaying2}
+              className="bg-blue-500 text-white p-2 font-normal rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+            >
               {state.isPlaying2 ? 'Playing...' : 'Play Audio'}
             </button>
           )}
         </p>
-        <p>"meaning" :- {state.def}</p>
+        <p className="text-black uppercase font-black">
+          meaning:
+          <span className=" text-white lowercase font-normal p-1">
+            {state.def}
+          </span>
+        </p>{' '}
       </div>
-      <div className={state.error ? 'text-white flex flex-col m-2' : 'hidden'}>
-        <p>{state.result}</p>
+      <div className={state.error ? 'flex flex-col m-2' : 'hidden'}>
+        <p className="text-white">{state.result}</p>
       </div>
     </div>
-  );
+  )
 }
 
-export default Card;
+export default Card
